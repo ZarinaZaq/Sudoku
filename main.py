@@ -4,31 +4,6 @@ from all_levels import list_all_lvl
 count_fail = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0}
 
 
-def check_character_for_isdigit(character):
-    """Проверяет является ли значение числом."""
-    while not character.isdigit():
-        character = input('Пожалуйста, введите число.\n')
-    return character
-
-
-def lvl_choice():
-    """Выводит на экран имеющиеся уровни и получает номер выбранного уровня."""
-    k = 1
-    while k <= len(list_all_lvl):
-        print(f'Уровень {k}:')
-        output(list_all_lvl[str(k)][1])
-        k += 1
-    choice = input('Выберите уровень из предложенного списка(от 1 до 4). \n')
-    choice = check_character_for_isdigit(choice)
-    while int(choice) >= k or int(choice) <= 0:
-        choice = input('Такого уровня не существует. Попробуйте заново. \n')
-    return choice
-
-
-choice_lvl = lvl_choice()
-game_field = list_all_lvl[choice_lvl][1]
-
-
 def output(table):
     """Выводит поле на экран."""
     print('    A B C   D E F   G H I')
@@ -39,6 +14,35 @@ def output(table):
         print(f'{k1 + 3}  ', *table[k1][6:], ' ', *table[k1 + 1][6:], ' ', *table[k1 + 2][6:])
         print()
         k1 += 3
+
+
+def check_character_for_isdigit(character, range):
+    """Проверяет является ли значение числом из выбранного диапазона."""
+
+    while not character.isdigit() or int(character) not in range:
+        if not character.isdigit():
+            character = input('Пожалуйста, введите число.\n')
+        elif int(character) not in range:
+            character = input(f'Пожалуйста, введите число из диапазона от {range[0]} до {range[-1]}.\n')
+    return character
+
+
+def lvl_choice():
+    """Выводит на экран имеющиеся уровни и получает номер выбранного уровня."""
+    k = 1
+    while k <= len(list_all_lvl):
+        print(f'Уровень {k}:')
+        output(list_all_lvl[str(k)][1])
+        k += 1
+
+    choice = input(f'Выберите уровень из предложенного списка (от 1 до {k-1}). \n')
+    range_in_function = [numbers for numbers in range(1, k)]
+    choice = check_character_for_isdigit(choice, range_in_function)
+    return choice
+
+
+choice_lvl = lvl_choice()
+game_field = list_all_lvl[choice_lvl][1]
 
 
 def get_block(cell_in_function):
@@ -72,9 +76,9 @@ def get_cell():
 def get_number(cell_in_function):
     """Запрашивает у пользователя цифру, проверяет её на корректность, а затем возвращает."""
     number = input(f'Введите значение, которое нужно разместить в ячейке {cell_in_function}. \n')
-    number = check_character_for_isdigit(number)
-    while int(number) <= 0 or int(number) > 9:
-        number = input('Значение введено некорректно. Повторите попытку. \n')
+    range_in_function = [numbers for numbers in range(1, 10)]
+    number = check_character_for_isdigit(number, range_in_function)
+
     return number
 
 
